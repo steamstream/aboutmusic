@@ -1,15 +1,8 @@
 
 import numpy as np
 
-import scipy
-import scipy.io.wavfile
 from scipy import fftpack
 import matplotlib.pyplot as plt
-
-
-DIRPATH = "./sample/" # wav 파일이 있는 위치
-filename = "canon_mono.wav" # wav 파일 이름
-filename = "001_G.wav"
 
 hzList = [
 	[16.4, 17.3, 18.4, 19.4, 20.6, 21.8, 23.1, 24.5, 26.0, 27.5, 29.1, 30.9],
@@ -24,11 +17,6 @@ hzList = [
 
 # hzList의 값을 한 리스트에 넣기 (hzList의 값 sublist에 대해), (sublist의 값 item)에 대해 컴프리헨션
 hzList_flatten =  [item for sublist in hzList for item in sublist]
-
-
-# wav 파일을 받아서 샘플링 레이트, 변위 데이터 구하기
-# data 는 (1 / sample_rate)초 단위로 구한 변위
-sample_rate, data = scipy.io.wavfile.read(DIRPATH + filename)
 
 def show_amp(filename, data, sample_rate):
     plt.clf() # clear figure, 그냥
@@ -50,12 +38,12 @@ def show_freq(filename, data, sample_rate):
     spectrum = fftpack.fft(data) # fast fourier transform
     freq = fftpack.fftfreq(len(data), d = 1.0 / sample_rate) # spectrum에 맞춰줄 값
     
-    plot_x = freq[:len(freq) // 2]
-    plot_y = abs(spectrum[:len(freq) // 2]) / sample_rate
-    plt.plot(plot_x, plot_y,  linewidth = 2)
+    plt.xlim(0, 4000) # 4000Hz 이하만 다룹
+    plt.xlim(xmin=0)
+    
+    plot_x = freq[:len(freq) // 2] # 대칭임, 앞 부분이 0보다 큰 값을 가지므로 반만 사용
+    plot_y = abs(spectrum[:len(freq) // 2]) / sample_rate # spectrum은 complex number. abs로 값을 구함. 역시 대칭이므로 반만. 너무 큰 값이므로 나눔.
+    plt.plot(plot_x, plot_y, linewidth = 2)
     
     plt.grid(True) # 보기 좋음
     plt.show()
-
-
-show_freq(filename, data, sample_rate)
