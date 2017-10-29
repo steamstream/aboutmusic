@@ -7,7 +7,7 @@ from scipy.io import wavfile
 
 wav_path = "./sample"
 file_name = "test(440, 30000).wav"
-
+file_name = "canon_mono.wav"
 with open(wav_path + "/" + file_name, "br") as fin:
     a = fin.read()
 
